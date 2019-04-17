@@ -1177,7 +1177,7 @@ public class PeerConnectionClient {
     }
 
     @Override
-    public void onIceConnectionChange(final IceConnectionState newState) {
+    public void onIceConnectionChange(final PeerConnection.IceConnectionState newState) {
       executor.execute(() -> {
         Log.d(TAG, "IceConnectionState: " + newState);
         if (newState == IceConnectionState.CONNECTED) {
@@ -1191,7 +1191,7 @@ public class PeerConnectionClient {
     }
 
     @Override
-    public void onConnectionChange(final PeerConnectionState newState) {
+    public void onConnectionChange(final PeerConnection.PeerConnectionState newState) {
       executor.execute(() -> {
         Log.d(TAG, "PeerConnectionState: " + newState);
         if (newState == PeerConnectionState.CONNECTED) {

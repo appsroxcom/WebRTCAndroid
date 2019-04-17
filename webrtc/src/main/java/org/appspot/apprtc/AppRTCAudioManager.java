@@ -54,7 +54,7 @@ public class AppRTCAudioManager {
   public interface AudioManagerEvents {
     // Callback fired once audio device is changed or list of available audio devices changed.
     void onAudioDeviceChanged(
-            AudioDevice selectedAudioDevice, Set<AudioDevice> availableAudioDevices);
+        AudioDevice selectedAudioDevice, Set<AudioDevice> availableAudioDevices);
   }
 
   private final Context apprtcContext;
@@ -120,16 +120,16 @@ public class AppRTCAudioManager {
 
     // The proximity sensor should only be activated when there are exactly two
     // available audio devices.
-    if (audioDevices.size() == 2 && audioDevices.contains(AudioDevice.EARPIECE)
-        && audioDevices.contains(AudioDevice.SPEAKER_PHONE)) {
+    if (audioDevices.size() == 2 && audioDevices.contains(AppRTCAudioManager.AudioDevice.EARPIECE)
+        && audioDevices.contains(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE)) {
       if (proximitySensor.sensorReportsNearState()) {
         // Sensor reports that a "handset is being held up to a person's ear",
         // or "something is covering the light sensor".
-        setAudioDeviceInternal(AudioDevice.EARPIECE);
+        setAudioDeviceInternal(AppRTCAudioManager.AudioDevice.EARPIECE);
       } else {
         // Sensor reports that a "handset is removed from a person's ear", or
         // "the light sensor is no longer covered".
-        setAudioDeviceInternal(AudioDevice.SPEAKER_PHONE);
+        setAudioDeviceInternal(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
       }
     }
   }
