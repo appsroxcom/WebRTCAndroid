@@ -1,7 +1,7 @@
 # WebRTCAndroid
 This is an Android Studio reference project for WebRTC based video and voice calling app. (https://appr.tc)
 
-<img src="screenshots/screenshot1.png" width=200/><img src="screenshots/screenshot2.png" width=200/><img src="screenshots/screenshot3.png" width=200/>
+<img src="screenshots/screenshot1.png" width=200/> <img src="screenshots/screenshot2.png" width=200/> <img src="screenshots/screenshot3.png" width=200/>
 
 For downloading the latest source follow the instructions given [here](https://webrtc.org/native-code/android/). 
 
