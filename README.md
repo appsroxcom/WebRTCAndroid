@@ -15,6 +15,23 @@ For downloading the latest source follow the instructions given [here](https://w
 
 The app connects to AppRTC server hosted by Google. If you wish to deploy your own server then follow the instructions given [here](https://github.com/webrtc/apprtc). Or you may use out-of-the-box docker image for AppRTC-Server available [here](https://hub.docker.com/r/piasy/apprtc-server/).
 
+```
+apt-get update
+apt-get upgrade
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update
+apt-cache policy docker-ce
+apt-get install -y docker-ce
+systemctl status docker
+
+docker run --rm --net=host
+-e PUBLIC_IP=xx.xxx.xx.xx
+-it piasy/apprtc-server
+```
+
+> http://xx.xxx.xx.xx:8080 is the server url.
+
 Once your server is up and running, you will need to specify the server url in the Settings screen of the app. Update 'Room server URL' under Miscellaneous settings.
 
 <img src="screenshots/screenshot4.png" width=200/>
