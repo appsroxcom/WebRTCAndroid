@@ -13,18 +13,12 @@ For downloading the latest source follow the instructions given [here](https://w
 
 ## Miscellaneous
 
-The app connects to AppRTC server hosted by Google. If you wish to deploy your own server then follow the instructions given [here](https://github.com/webrtc/apprtc). Or you may use out-of-the-box docker image for AppRTC-Server available [here](https://hub.docker.com/r/piasy/apprtc-server/).
+Update: As per https://github.com/webrtc/apprtc
+> appr.tc has been shutdown. Please use the Dockerfile to run your own test/dev instance. 
+
+The app connects to AppRTC server hosted by Google (which has been shutdown). If you wish to deploy your own server then follow the instructions given [here](https://github.com/webrtc/apprtc). Or you may use out-of-the-box docker image for AppRTC-Server available [here](https://hub.docker.com/r/piasy/apprtc-server/).
 
 ```
-apt-get update
-apt-get upgrade
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-apt-get update
-apt-cache policy docker-ce
-apt-get install -y docker-ce
-systemctl status docker
-
 docker run --rm --net=host
 -e PUBLIC_IP=xx.xxx.xx.xx
 -it piasy/apprtc-server
