@@ -11,7 +11,6 @@
 package com.example.webrtc.android;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,7 +46,6 @@ import org.appspot.apprtc.ui.SettingsActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-
 /**
  * Handles the initial setup where the user selects which room to join.
  */
@@ -55,7 +53,7 @@ public class ConnectActivity extends AppCompatActivity {
   private static final String TAG = "ConnectActivity";
   private static final int CONNECTION_REQUEST = 1;
   private static final int REMOVE_FAVORITE_INDEX = 0;
-  private static boolean commandLineRun = false;
+  private static boolean commandLineRun;
 
   private ImageButton addFavoriteButton;
   private EditText roomEditText;
@@ -78,17 +76,17 @@ public class ConnectActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
 
     // Get setting keys.
-    PreferenceManager.setDefaultValues(this, org.appspot.apprtc.R.xml.preferences, false);
+    PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-    keyprefResolution = getString(org.appspot.apprtc.R.string.pref_resolution_key);
-    keyprefFps = getString(org.appspot.apprtc.R.string.pref_fps_key);
-    keyprefVideoBitrateType = getString(org.appspot.apprtc.R.string.pref_maxvideobitrate_key);
-    keyprefVideoBitrateValue = getString(org.appspot.apprtc.R.string.pref_maxvideobitratevalue_key);
-    keyprefAudioBitrateType = getString(org.appspot.apprtc.R.string.pref_startaudiobitrate_key);
-    keyprefAudioBitrateValue = getString(org.appspot.apprtc.R.string.pref_startaudiobitratevalue_key);
-    keyprefRoomServerUrl = getString(org.appspot.apprtc.R.string.pref_room_server_url_key);
-    keyprefRoom = getString(org.appspot.apprtc.R.string.pref_room_key);
-    keyprefRoomList = getString(org.appspot.apprtc.R.string.pref_room_list_key);
+    keyprefResolution = getString(R.string.pref_resolution_key);
+    keyprefFps = getString(R.string.pref_fps_key);
+    keyprefVideoBitrateType = getString(R.string.pref_maxvideobitrate_key);
+    keyprefVideoBitrateValue = getString(R.string.pref_maxvideobitratevalue_key);
+    keyprefAudioBitrateType = getString(R.string.pref_startaudiobitrate_key);
+    keyprefAudioBitrateValue = getString(R.string.pref_startaudiobitratevalue_key);
+    keyprefRoomServerUrl = getString(R.string.pref_room_server_url_key);
+    keyprefRoom = getString(R.string.pref_room_key);
+    keyprefRoomList = getString(R.string.pref_room_list_key);
 
     setContentView(R.layout.activity_connect);
 
@@ -137,7 +135,7 @@ public class ConnectActivity extends AppCompatActivity {
     if (v.getId() == R.id.room_listview) {
       AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
       menu.setHeaderTitle(roomList.get(info.position));
-      String[] menuItems = getResources().getStringArray(org.appspot.apprtc.R.array.roomListContextMenu);
+      String[] menuItems = getResources().getStringArray(R.array.roomListContextMenu);
       for (int i = 0; i < menuItems.length; i++) {
         menu.add(Menu.NONE, i, i, menuItems[i]);
       }
@@ -287,75 +285,75 @@ public class ConnectActivity extends AppCompatActivity {
     }
 
     String roomUrl = sharedPref.getString(
-        keyprefRoomServerUrl, getString(org.appspot.apprtc.R.string.pref_room_server_url_default));
+        keyprefRoomServerUrl, getString(R.string.pref_room_server_url_default));
 
     // Video call enabled flag.
-    boolean videoCallEnabled = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_videocall_key,
-        CallActivity.EXTRA_VIDEO_CALL, org.appspot.apprtc.R.string.pref_videocall_default, useValuesFromIntent);
+    boolean videoCallEnabled = sharedPrefGetBoolean(R.string.pref_videocall_key,
+        CallActivity.EXTRA_VIDEO_CALL, R.string.pref_videocall_default, useValuesFromIntent);
 
     // Use screencapture option.
-    boolean useScreencapture = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_screencapture_key,
-        CallActivity.EXTRA_SCREENCAPTURE, org.appspot.apprtc.R.string.pref_screencapture_default, useValuesFromIntent);
+    boolean useScreencapture = sharedPrefGetBoolean(R.string.pref_screencapture_key,
+        CallActivity.EXTRA_SCREENCAPTURE, R.string.pref_screencapture_default, useValuesFromIntent);
 
     // Use Camera2 option.
-    boolean useCamera2 = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_camera2_key, CallActivity.EXTRA_CAMERA2,
-        org.appspot.apprtc.R.string.pref_camera2_default, useValuesFromIntent);
+    boolean useCamera2 = sharedPrefGetBoolean(R.string.pref_camera2_key, CallActivity.EXTRA_CAMERA2,
+        R.string.pref_camera2_default, useValuesFromIntent);
 
     // Get default codecs.
-    String videoCodec = sharedPrefGetString(org.appspot.apprtc.R.string.pref_videocodec_key,
-        CallActivity.EXTRA_VIDEOCODEC, org.appspot.apprtc.R.string.pref_videocodec_default, useValuesFromIntent);
-    String audioCodec = sharedPrefGetString(org.appspot.apprtc.R.string.pref_audiocodec_key,
-        CallActivity.EXTRA_AUDIOCODEC, org.appspot.apprtc.R.string.pref_audiocodec_default, useValuesFromIntent);
+    String videoCodec = sharedPrefGetString(R.string.pref_videocodec_key,
+        CallActivity.EXTRA_VIDEOCODEC, R.string.pref_videocodec_default, useValuesFromIntent);
+    String audioCodec = sharedPrefGetString(R.string.pref_audiocodec_key,
+        CallActivity.EXTRA_AUDIOCODEC, R.string.pref_audiocodec_default, useValuesFromIntent);
 
     // Check HW codec flag.
-    boolean hwCodec = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_hwcodec_key,
-        CallActivity.EXTRA_HWCODEC_ENABLED, org.appspot.apprtc.R.string.pref_hwcodec_default, useValuesFromIntent);
+    boolean hwCodec = sharedPrefGetBoolean(R.string.pref_hwcodec_key,
+        CallActivity.EXTRA_HWCODEC_ENABLED, R.string.pref_hwcodec_default, useValuesFromIntent);
 
     // Check Capture to texture.
-    boolean captureToTexture = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_capturetotexture_key,
-        CallActivity.EXTRA_CAPTURETOTEXTURE_ENABLED, org.appspot.apprtc.R.string.pref_capturetotexture_default,
+    boolean captureToTexture = sharedPrefGetBoolean(R.string.pref_capturetotexture_key,
+        CallActivity.EXTRA_CAPTURETOTEXTURE_ENABLED, R.string.pref_capturetotexture_default,
         useValuesFromIntent);
 
     // Check FlexFEC.
-    boolean flexfecEnabled = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_flexfec_key,
-        CallActivity.EXTRA_FLEXFEC_ENABLED, org.appspot.apprtc.R.string.pref_flexfec_default, useValuesFromIntent);
+    boolean flexfecEnabled = sharedPrefGetBoolean(R.string.pref_flexfec_key,
+        CallActivity.EXTRA_FLEXFEC_ENABLED, R.string.pref_flexfec_default, useValuesFromIntent);
 
     // Check Disable Audio Processing flag.
-    boolean noAudioProcessing = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_noaudioprocessing_key,
-        CallActivity.EXTRA_NOAUDIOPROCESSING_ENABLED, org.appspot.apprtc.R.string.pref_noaudioprocessing_default,
+    boolean noAudioProcessing = sharedPrefGetBoolean(R.string.pref_noaudioprocessing_key,
+        CallActivity.EXTRA_NOAUDIOPROCESSING_ENABLED, R.string.pref_noaudioprocessing_default,
         useValuesFromIntent);
 
-    boolean aecDump = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_aecdump_key,
-        CallActivity.EXTRA_AECDUMP_ENABLED, org.appspot.apprtc.R.string.pref_aecdump_default, useValuesFromIntent);
+    boolean aecDump = sharedPrefGetBoolean(R.string.pref_aecdump_key,
+        CallActivity.EXTRA_AECDUMP_ENABLED, R.string.pref_aecdump_default, useValuesFromIntent);
 
     boolean saveInputAudioToFile =
-        sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_enable_save_input_audio_to_file_key,
+        sharedPrefGetBoolean(R.string.pref_enable_save_input_audio_to_file_key,
             CallActivity.EXTRA_SAVE_INPUT_AUDIO_TO_FILE_ENABLED,
-            org.appspot.apprtc.R.string.pref_enable_save_input_audio_to_file_default, useValuesFromIntent);
+            R.string.pref_enable_save_input_audio_to_file_default, useValuesFromIntent);
 
     // Check OpenSL ES enabled flag.
-    boolean useOpenSLES = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_opensles_key,
-        CallActivity.EXTRA_OPENSLES_ENABLED, org.appspot.apprtc.R.string.pref_opensles_default, useValuesFromIntent);
+    boolean useOpenSLES = sharedPrefGetBoolean(R.string.pref_opensles_key,
+        CallActivity.EXTRA_OPENSLES_ENABLED, R.string.pref_opensles_default, useValuesFromIntent);
 
     // Check Disable built-in AEC flag.
-    boolean disableBuiltInAEC = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_disable_built_in_aec_key,
-        CallActivity.EXTRA_DISABLE_BUILT_IN_AEC, org.appspot.apprtc.R.string.pref_disable_built_in_aec_default,
+    boolean disableBuiltInAEC = sharedPrefGetBoolean(R.string.pref_disable_built_in_aec_key,
+        CallActivity.EXTRA_DISABLE_BUILT_IN_AEC, R.string.pref_disable_built_in_aec_default,
         useValuesFromIntent);
 
     // Check Disable built-in AGC flag.
-    boolean disableBuiltInAGC = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_disable_built_in_agc_key,
-        CallActivity.EXTRA_DISABLE_BUILT_IN_AGC, org.appspot.apprtc.R.string.pref_disable_built_in_agc_default,
+    boolean disableBuiltInAGC = sharedPrefGetBoolean(R.string.pref_disable_built_in_agc_key,
+        CallActivity.EXTRA_DISABLE_BUILT_IN_AGC, R.string.pref_disable_built_in_agc_default,
         useValuesFromIntent);
 
     // Check Disable built-in NS flag.
-    boolean disableBuiltInNS = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_disable_built_in_ns_key,
-        CallActivity.EXTRA_DISABLE_BUILT_IN_NS, org.appspot.apprtc.R.string.pref_disable_built_in_ns_default,
+    boolean disableBuiltInNS = sharedPrefGetBoolean(R.string.pref_disable_built_in_ns_key,
+        CallActivity.EXTRA_DISABLE_BUILT_IN_NS, R.string.pref_disable_built_in_ns_default,
         useValuesFromIntent);
 
     // Check Disable gain control
     boolean disableWebRtcAGCAndHPF = sharedPrefGetBoolean(
-        org.appspot.apprtc.R.string.pref_disable_webrtc_agc_and_hpf_key, CallActivity.EXTRA_DISABLE_WEBRTC_AGC_AND_HPF,
-        org.appspot.apprtc.R.string.pref_disable_webrtc_agc_and_hpf_key, useValuesFromIntent);
+        R.string.pref_disable_webrtc_agc_and_hpf_key, CallActivity.EXTRA_DISABLE_WEBRTC_AGC_AND_HPF,
+        R.string.pref_disable_webrtc_agc_and_hpf_key, useValuesFromIntent);
 
     // Get video resolution from settings.
     int videoWidth = 0;
@@ -366,7 +364,7 @@ public class ConnectActivity extends AppCompatActivity {
     }
     if (videoWidth == 0 && videoHeight == 0) {
       String resolution =
-          sharedPref.getString(keyprefResolution, getString(org.appspot.apprtc.R.string.pref_resolution_default));
+          sharedPref.getString(keyprefResolution, getString(R.string.pref_resolution_default));
       String[] dimensions = resolution.split("[ x]+");
       if (dimensions.length == 2) {
         try {
@@ -386,7 +384,7 @@ public class ConnectActivity extends AppCompatActivity {
       cameraFps = getIntent().getIntExtra(CallActivity.EXTRA_VIDEO_FPS, 0);
     }
     if (cameraFps == 0) {
-      String fps = sharedPref.getString(keyprefFps, getString(org.appspot.apprtc.R.string.pref_fps_default));
+      String fps = sharedPref.getString(keyprefFps, getString(R.string.pref_fps_default));
       String[] fpsValues = fps.split("[ x]+");
       if (fpsValues.length == 2) {
         try {
@@ -399,9 +397,9 @@ public class ConnectActivity extends AppCompatActivity {
     }
 
     // Check capture quality slider flag.
-    boolean captureQualitySlider = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_capturequalityslider_key,
+    boolean captureQualitySlider = sharedPrefGetBoolean(R.string.pref_capturequalityslider_key,
         CallActivity.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED,
-        org.appspot.apprtc.R.string.pref_capturequalityslider_default, useValuesFromIntent);
+        R.string.pref_capturequalityslider_default, useValuesFromIntent);
 
     // Get video and audio start bitrate.
     int videoStartBitrate = 0;
@@ -409,11 +407,11 @@ public class ConnectActivity extends AppCompatActivity {
       videoStartBitrate = getIntent().getIntExtra(CallActivity.EXTRA_VIDEO_BITRATE, 0);
     }
     if (videoStartBitrate == 0) {
-      String bitrateTypeDefault = getString(org.appspot.apprtc.R.string.pref_maxvideobitrate_default);
+      String bitrateTypeDefault = getString(R.string.pref_maxvideobitrate_default);
       String bitrateType = sharedPref.getString(keyprefVideoBitrateType, bitrateTypeDefault);
       if (!bitrateType.equals(bitrateTypeDefault)) {
         String bitrateValue = sharedPref.getString(
-            keyprefVideoBitrateValue, getString(org.appspot.apprtc.R.string.pref_maxvideobitratevalue_default));
+            keyprefVideoBitrateValue, getString(R.string.pref_maxvideobitratevalue_default));
         videoStartBitrate = Integer.parseInt(bitrateValue);
       }
     }
@@ -423,49 +421,45 @@ public class ConnectActivity extends AppCompatActivity {
       audioStartBitrate = getIntent().getIntExtra(CallActivity.EXTRA_AUDIO_BITRATE, 0);
     }
     if (audioStartBitrate == 0) {
-      String bitrateTypeDefault = getString(org.appspot.apprtc.R.string.pref_startaudiobitrate_default);
+      String bitrateTypeDefault = getString(R.string.pref_startaudiobitrate_default);
       String bitrateType = sharedPref.getString(keyprefAudioBitrateType, bitrateTypeDefault);
       if (!bitrateType.equals(bitrateTypeDefault)) {
         String bitrateValue = sharedPref.getString(
-            keyprefAudioBitrateValue, getString(org.appspot.apprtc.R.string.pref_startaudiobitratevalue_default));
+            keyprefAudioBitrateValue, getString(R.string.pref_startaudiobitratevalue_default));
         audioStartBitrate = Integer.parseInt(bitrateValue);
       }
     }
 
     // Check statistics display option.
-    boolean displayHud = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_displayhud_key,
-        CallActivity.EXTRA_DISPLAY_HUD, org.appspot.apprtc.R.string.pref_displayhud_default, useValuesFromIntent);
+    boolean displayHud = sharedPrefGetBoolean(R.string.pref_displayhud_key,
+        CallActivity.EXTRA_DISPLAY_HUD, R.string.pref_displayhud_default, useValuesFromIntent);
 
-    boolean tracing = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_tracing_key, CallActivity.EXTRA_TRACING,
-        org.appspot.apprtc.R.string.pref_tracing_default, useValuesFromIntent);
+    boolean tracing = sharedPrefGetBoolean(R.string.pref_tracing_key, CallActivity.EXTRA_TRACING,
+        R.string.pref_tracing_default, useValuesFromIntent);
 
     // Check Enable RtcEventLog.
-    boolean rtcEventLogEnabled = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_enable_rtceventlog_key,
-        CallActivity.EXTRA_ENABLE_RTCEVENTLOG, org.appspot.apprtc.R.string.pref_enable_rtceventlog_default,
-        useValuesFromIntent);
-
-    boolean useLegacyAudioDevice = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_use_legacy_audio_device_key,
-        CallActivity.EXTRA_USE_LEGACY_AUDIO_DEVICE, org.appspot.apprtc.R.string.pref_use_legacy_audio_device_default,
+    boolean rtcEventLogEnabled = sharedPrefGetBoolean(R.string.pref_enable_rtceventlog_key,
+        CallActivity.EXTRA_ENABLE_RTCEVENTLOG, R.string.pref_enable_rtceventlog_default,
         useValuesFromIntent);
 
     // Get datachannel options
-    boolean dataChannelEnabled = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_enable_datachannel_key,
-        CallActivity.EXTRA_DATA_CHANNEL_ENABLED, org.appspot.apprtc.R.string.pref_enable_datachannel_default,
+    boolean dataChannelEnabled = sharedPrefGetBoolean(R.string.pref_enable_datachannel_key,
+        CallActivity.EXTRA_DATA_CHANNEL_ENABLED, R.string.pref_enable_datachannel_default,
         useValuesFromIntent);
-    boolean ordered = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_ordered_key, CallActivity.EXTRA_ORDERED,
-        org.appspot.apprtc.R.string.pref_ordered_default, useValuesFromIntent);
-    boolean negotiated = sharedPrefGetBoolean(org.appspot.apprtc.R.string.pref_negotiated_key,
-        CallActivity.EXTRA_NEGOTIATED, org.appspot.apprtc.R.string.pref_negotiated_default, useValuesFromIntent);
-    int maxRetrMs = sharedPrefGetInteger(org.appspot.apprtc.R.string.pref_max_retransmit_time_ms_key,
-        CallActivity.EXTRA_MAX_RETRANSMITS_MS, org.appspot.apprtc.R.string.pref_max_retransmit_time_ms_default,
+    boolean ordered = sharedPrefGetBoolean(R.string.pref_ordered_key, CallActivity.EXTRA_ORDERED,
+        R.string.pref_ordered_default, useValuesFromIntent);
+    boolean negotiated = sharedPrefGetBoolean(R.string.pref_negotiated_key,
+        CallActivity.EXTRA_NEGOTIATED, R.string.pref_negotiated_default, useValuesFromIntent);
+    int maxRetrMs = sharedPrefGetInteger(R.string.pref_max_retransmit_time_ms_key,
+        CallActivity.EXTRA_MAX_RETRANSMITS_MS, R.string.pref_max_retransmit_time_ms_default,
         useValuesFromIntent);
     int maxRetr =
-        sharedPrefGetInteger(org.appspot.apprtc.R.string.pref_max_retransmits_key, CallActivity.EXTRA_MAX_RETRANSMITS,
-            org.appspot.apprtc.R.string.pref_max_retransmits_default, useValuesFromIntent);
-    int id = sharedPrefGetInteger(org.appspot.apprtc.R.string.pref_data_id_key, CallActivity.EXTRA_ID,
-        org.appspot.apprtc.R.string.pref_data_id_default, useValuesFromIntent);
-    String protocol = sharedPrefGetString(org.appspot.apprtc.R.string.pref_data_protocol_key,
-        CallActivity.EXTRA_PROTOCOL, org.appspot.apprtc.R.string.pref_data_protocol_default, useValuesFromIntent);
+        sharedPrefGetInteger(R.string.pref_max_retransmits_key, CallActivity.EXTRA_MAX_RETRANSMITS,
+            R.string.pref_max_retransmits_default, useValuesFromIntent);
+    int id = sharedPrefGetInteger(R.string.pref_data_id_key, CallActivity.EXTRA_ID,
+        R.string.pref_data_id_default, useValuesFromIntent);
+    String protocol = sharedPrefGetString(R.string.pref_data_protocol_key,
+        CallActivity.EXTRA_PROTOCOL, R.string.pref_data_protocol_default, useValuesFromIntent);
 
     // Start AppRTCMobile activity.
     Log.d(TAG, "Connecting to room " + roomId + " at URL " + roomUrl);
@@ -502,8 +496,6 @@ public class ConnectActivity extends AppCompatActivity {
       intent.putExtra(CallActivity.EXTRA_ENABLE_RTCEVENTLOG, rtcEventLogEnabled);
       intent.putExtra(CallActivity.EXTRA_CMDLINE, commandLineRun);
       intent.putExtra(CallActivity.EXTRA_RUNTIME, runTimeMs);
-      intent.putExtra(CallActivity.EXTRA_USE_LEGACY_AUDIO_DEVICE, useLegacyAudioDevice);
-
       intent.putExtra(CallActivity.EXTRA_DATA_CHANNEL_ENABLED, dataChannelEnabled);
 
       if (dataChannelEnabled) {
@@ -604,10 +596,10 @@ public class ConnectActivity extends AppCompatActivity {
     }
 
     new AlertDialog.Builder(this)
-        .setTitle(getText(org.appspot.apprtc.R.string.invalid_url_title))
-        .setMessage(getString(org.appspot.apprtc.R.string.invalid_url_text, url))
+        .setTitle(getText(R.string.invalid_url_title))
+        .setMessage(getString(R.string.invalid_url_text, url))
         .setCancelable(false)
-        .setNeutralButton(org.appspot.apprtc.R.string.ok,
+        .setNeutralButton(R.string.ok,
             new DialogInterface.OnClickListener() {
               @Override
               public void onClick(DialogInterface dialog, int id) {

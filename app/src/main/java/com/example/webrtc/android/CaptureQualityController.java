@@ -30,10 +30,10 @@ public class CaptureQualityController implements SeekBar.OnSeekBarChangeListener
   private static final int FRAMERATE_THRESHOLD = 15;
   private TextView captureFormatText;
   private CallFragment.OnCallEvents callEvents;
-  private int width = 0;
-  private int height = 0;
-  private int framerate = 0;
-  private double targetBandwidth = 0;
+  private int width;
+  private int height;
+  private int framerate;
+  private double targetBandwidth;
 
   public CaptureQualityController(
       TextView captureFormatText, CallFragment.OnCallEvents callEvents) {
@@ -64,7 +64,7 @@ public class CaptureQualityController implements SeekBar.OnSeekBarChangeListener
       width = 0;
       height = 0;
       framerate = 0;
-      captureFormatText.setText(org.appspot.apprtc.R.string.muted);
+      captureFormatText.setText(R.string.muted);
       return;
     }
 
@@ -89,7 +89,7 @@ public class CaptureQualityController implements SeekBar.OnSeekBarChangeListener
     height = bestFormat.height;
     framerate = calculateFramerate(targetBandwidth, bestFormat);
     captureFormatText.setText(
-        String.format(captureFormatText.getContext().getString(org.appspot.apprtc.R.string.format_description), width,
+        String.format(captureFormatText.getContext().getString(R.string.format_description), width,
             height, framerate));
   }
 

@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -36,7 +37,6 @@ import java.lang.RuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 import org.appspot.apprtc.AppRTCAudioManager;
 import org.appspot.apprtc.AppRTCAudioManager.AudioDevice;
@@ -128,8 +128,6 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   public static final String EXTRA_NEGOTIATED = "org.appspot.apprtc.NEGOTIATED";
   public static final String EXTRA_ID = "org.appspot.apprtc.ID";
   public static final String EXTRA_ENABLE_RTCEVENTLOG = "org.appspot.apprtc.ENABLE_RTCEVENTLOG";
-  public static final String EXTRA_USE_LEGACY_AUDIO_DEVICE =
-      "org.appspot.apprtc.USE_LEGACY_AUDIO_DEVICE";
 
   private static final int CAPTURE_PERMISSION_REQUEST_CODE = 1;
 
@@ -160,14 +158,12 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
   private final ProxyVideoSink remoteProxyRenderer = new ProxyVideoSink();
   private final ProxyVideoSink localProxyVideoSink = new ProxyVideoSink();
-  @Nullable
-  private PeerConnectionClient peerConnectionClient = null;
+  @Nullable private PeerConnectionClient peerConnectionClient;
   @Nullable
   private AppRTCClient appRtcClient;
   @Nullable
   private SignalingParameters signalingParameters;
-  @Nullable
-  private AppRTCAudioManager audioManager = null;
+  @Nullable private AppRTCAudioManager audioManager;
   @Nullable
   private SurfaceViewRenderer pipRenderer;
   @Nullable
@@ -181,12 +177,12 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   private RoomConnectionParameters roomConnectionParameters;
   @Nullable
   private PeerConnectionParameters peerConnectionParameters;
-  private boolean iceConnected;
+  private boolean connected;
   private boolean isError;
   private boolean callControlFragmentVisible = true;
-  private long callStartedTimeMs = 0;
+  private long callStartedTimeMs;
   private boolean micEnabled = true;
-  private boolean screencaptureEnabled = false;
+  private boolean screencaptureEnabled;
   private static Intent mediaProjectionPermissionResultData;
   private static int mediaProjectionPermissionResultCode;
   // True if local view is in the fullscreen renderer.
@@ -213,7 +209,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     getWindow().getDecorView().setSystemUiVisibility(getSystemUiVisibility());
     setContentView(R.layout.activity_call);
 
-    iceConnected = false;
+    connected = false;
     signalingParameters = null;
 
     // Create UI controls.
@@ -283,7 +279,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
     Uri roomUri = intent.getData();
     if (roomUri == null) {
-      logAndToast(getString(org.appspot.apprtc.R.string.missing_url));
+      logAndToast(getString(R.string.missing_url));
       Log.e(TAG, "Didn't get any URL in intent!");
       setResult(RESULT_CANCELED);
       finish();
@@ -294,7 +290,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     String roomId = intent.getStringExtra(EXTRA_ROOMID);
     Log.d(TAG, "Room ID: " + roomId);
     if (roomId == null || roomId.length() == 0) {
-      logAndToast(getString(org.appspot.apprtc.R.string.missing_url));
+      logAndToast(getString(R.string.missing_url));
       Log.e(TAG, "Incorrect room ID in intent!");
       setResult(RESULT_CANCELED);
       finish();
@@ -336,8 +332,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
             intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_AGC, false),
             intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_NS, false),
             intent.getBooleanExtra(EXTRA_DISABLE_WEBRTC_AGC_AND_HPF, false),
-            intent.getBooleanExtra(EXTRA_ENABLE_RTCEVENTLOG, false),
-            intent.getBooleanExtra(EXTRA_USE_LEGACY_AUDIO_DEVICE, false), dataChannelParameters);
+            intent.getBooleanExtra(EXTRA_ENABLE_RTCEVENTLOG, false), dataChannelParameters);
     commandLineRun = intent.getBooleanExtra(EXTRA_CMDLINE, false);
     int runTimeMs = intent.getIntExtra(EXTRA_RUNTIME, 0);
 
@@ -563,7 +558,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
   // Helper functions.
   private void toggleCallControlFragmentVisibility() {
-    if (!iceConnected || !callFragment.isAdded()) {
+    if (!connected || !callFragment.isAdded()) {
       return;
     }
     // Show/hide call control fragment
@@ -588,7 +583,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     callStartedTimeMs = System.currentTimeMillis();
 
     // Start room connection.
-    logAndToast(getString(org.appspot.apprtc.R.string.connecting_to, roomConnectionParameters.roomUrl));
+    logAndToast(getString(R.string.connecting_to, roomConnectionParameters.roomUrl));
     appRtcClient.connectToRoom(roomConnectionParameters);
 
     // Create and audio manager that will take care of audio routing,
@@ -659,7 +654,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
       audioManager.stop();
       audioManager = null;
     }
-    if (iceConnected && !isError) {
+    if (connected && !isError) {
       setResult(RESULT_OK);
     } else {
       setResult(RESULT_CANCELED);
@@ -673,10 +668,10 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
       disconnect();
     } else {
       new AlertDialog.Builder(this)
-          .setTitle(getText(org.appspot.apprtc.R.string.channel_error_title))
+          .setTitle(getText(R.string.channel_error_title))
           .setMessage(errorMessage)
           .setCancelable(false)
-          .setNeutralButton(org.appspot.apprtc.R.string.ok,
+          .setNeutralButton(R.string.ok,
               new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
@@ -725,7 +720,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
       return createScreenCapturer();
     } else if (useCamera2()) {
       if (!captureToTexture()) {
-        reportError(getString(org.appspot.apprtc.R.string.camera2_texture_only_error));
+        reportError(getString(R.string.camera2_texture_only_error));
         return null;
       }
 
@@ -921,8 +916,6 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
       @Override
       public void run() {
         logAndToast("ICE connected, delay=" + delta + "ms");
-        iceConnected = true;
-        callConnected();
       }
     });
   }
@@ -933,7 +926,30 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
       @Override
       public void run() {
         logAndToast("ICE disconnected");
-        iceConnected = false;
+      }
+    });
+  }
+
+  @Override
+  public void onConnected() {
+    final long delta = System.currentTimeMillis() - callStartedTimeMs;
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        logAndToast("DTLS connected, delay=" + delta + "ms");
+        connected = true;
+        callConnected();
+      }
+    });
+  }
+
+  @Override
+  public void onDisconnected() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        logAndToast("DTLS disconnected");
+        connected = false;
         disconnect();
       }
     });
@@ -947,7 +963,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        if (!isError && iceConnected) {
+        if (!isError && connected) {
           hudFragment.updateEncoderStatistics(reports);
         }
       }

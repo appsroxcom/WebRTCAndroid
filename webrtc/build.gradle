@@ -22,5 +22,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'org.webrtc:google-webrtc:1.0.24277'
+    implementation 'org.webrtc:google-webrtc:1.0.27485'
+    implementation 'com.android.support:support-annotations:28.0.0'
+
 }
